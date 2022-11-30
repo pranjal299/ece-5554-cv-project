@@ -10,31 +10,76 @@
         <center>
             <h1>Combining Visual and Descriptive Information for House Price Estimation</h1>
             <h3>Sarvesh Patil and Pranjal Ranjan</h3>
-            <h3>Fall 2022, ECE 5554: Computer Vision Project Proposal</h3>
+            <h3>Fall 2022, ECE 5554: Computer Vision Project Report</h3>
             <h3>Virginia Tech</h3>
         </center>
 
         <hr>
 
-        <center><h3>Problem Statement</h3></center>
+        <center><h3>Abstract</h3></center>
         <p>
-            The task is to estimate the price of a house given a combination of its visual and descriptive information. The visual information is in the form of - images of the frontal view of the house, images of the interior of the house, as well as aerial images of the house and its surrounding areas. The descriptive information attributes such as latitude, longitude, no. of bedrooms, no. of bathrooms, and area of the house.
+            The task is to estimate the price of a house given a combination of its visual and descriptive information. The visual information is in the form of - images of the frontal view of the house, images of the interior of the house, as well as satellite images of the house and its surrounding areas. The descriptive information consists of attributes such as latitude, longitude, no. of bedrooms, no. of bathrooms, and area of the house.
         </p>
         <p>
-            Framing this as a research study, the question that is being explored by this project is about the effect of visual information on the regression task of estimating house prices that is usually tackled by just considering numerical and categorical features. A deeper analysis will be done by performing comparisons of performance between different ways of providing this visual information to the models as well.
+            Framing this as a research study, the question that is being explored by this project is about the effect of visual information on the regression task of estimating house prices that is usually tackled by just considering numerical and categorical features. A deeper analysis is done by performing comparisons of performance between different ways of providing this visual information to the models as well. The results of the experiments performed on two different datasets show that visual information augments the task of house price estimation, as the performance improves as we add more types of visual inputs in addition to the descriptive features.
         </p>
         <br><hr>
 
-        <center><h3>Datasets</h3></center>
-        <p>We will use three datasets for our experiments:</p>
+        <center><h3>Teaser</h3></center>
+        <center><figure>
+            <img src='images/teaser.png' width="50%" />
+            <figcaption>Fig. 1. "Teaser" Figure</figcaption>
+        </figure></center>
+        <br><hr>
+
+        <center><h3>Introduction</h3></center>
+        <p>Estimating house prices is a complex task that traditionally requires human expertise. However, machine learning algorithms are now able to handle this task with a high degree of accuracy. In particular, deep learning algorithms have proven to be very effective at estimating property values. By training these algorithms on large datasets of past sales data, they are able to learn the relationships between different features and property values. This allows them to make highly accurate predictions, even for properties that have never been sold before. As a result, machine learning is increasingly being used to provide accurate estimates of house prices.</p>
+        <p>There has been a lot of work done in the past on the usage of descriptive features of the house for its price estimation, however not a lot of investigation has been done on how a multimodal dataset can be utilized for this task. Particularly the usage of visual information can be especially effective for house price estimation, depending on what kind of images are used and how. The intuition behind this is that apart from the number of bedrooms, bathrooms, and area of the house, the neighborhood can also have a significant effect on driving its price, and this kind of information can be decoded from visual information such as frontal images, interior images, and satellite images of the locality. It can be expected that this visual information would generally aid machine learning or deep learning systems trained for the task of house price estimation. The extent to what it augments the network would depend on how the visual information is incorporated, as well as its relevance and impact on the price.</p>
+        <p>We aim to investigate this aspect of how different visual inputs affect the target task on the considered datasets by comparing the performances of models trained on incremental sets of information -</p>
         <ol>
-            <li>New York Houses Dataset [2] - A dataset&nbsp;of 10,900 houses with:
+            <li>Descriptive Features Only</li>
+            <li>Descriptive Features + Frontal Images</li>
+            <li>Descriptive Features + Frontal Images + More Visual Information
+                <ol style="list-style-type: lower-alpha;">
+                    <li>Satellites Images (for New York Houses Dataset)</li>
+                    <li>Interior Images - bedroom, bathroom, kitchen (for California Houses Dataset)</li>
+                </ol>
+            </li>
+        </ol>
+        <br><hr>
+
+        <center><h3>Approach</h3></center>
+        <p>We shall treat this task as a regression problem, with the target variable as the price of the house and the input features as the various types of images of houses, and their descriptive information.</p>
+        <p>We will follow a three-stage approach, in each of which we will train a model with an increasing amount of information and utilize a different deep-learning architecture.</p>
+        <p>Stage 1: We will use a multilayer perceptron model which will be trained on the descriptive house features only.</p>
+        <center><figure>
+            <img src='images/model_stage1.png' width="50%" />
+            <figcaption>Fig. 2. Model Pipeline for Stage 1</figcaption>
+        </figure></center>
+        <p>Stage 2: We will use a dual-input neural network, with one input processing the frontal images, and the other input processing the descriptive features. Both inputs will be processed by different branches of the model, and the outputs of those branches will be concatenated together to form an intermediary output. This will then be processed using a final neural network.</p>
+        <center><figure>
+            <img src='images/model_stage2.png' width="50%" />
+            <figcaption>Fig. 3. Model Pipeline for Stage 2</figcaption>
+        </figure></center>
+        <p>Stage 3: A model similar to Stage 2 will be used, but in this case, we will stack the frontal image with either the satellite image for the New York Houses Dataset, or the interior images for the California Houses Dataset. We will feed this depthwise stacked image to one branch and the rest of the process will be the same as Stage 2.</p>
+        <center><figure>
+            <img src='images/model_stage3.png' width="100%" />
+            <figcaption>Fig. 4. Model Pipeline for Stage 3</figcaption>
+        </figure></center>
+
+        <p>For each stage, we use the metric of MAPE (Mean Average Percentage Error) to represent the performance of the models. We then compare all these models to get an idea of how visual information is impacting the task.</p>
+        <br><hr>
+
+        <center><h3>Datasets</h3></center>
+        <p>The datasets that we utilize for our experiments are as follows -</p>
+        <ol>
+            <li>New York Houses Dataset (Sourced from [2]) - A dataset of 10,900 houses with:
                 <ul>
                     <li>Images: Frontal View</li>
                     <li>Features: Price, Latitude, Longitude, No. of Bedrooms, No. of Bathrooms, and House area</li>
                 </ul>
             </li>
-            <li>California Houses Dataset [1] - A dataset of 535 houses with:
+            <li>California Houses Dataset (Sourced from [1]) - A dataset of 535 houses with:
                 <ul>
                     <li>Images: Frontal View, Bedroom, Bathroom, Kitchen</li>
                     <li>Features: Price, Zip code, No. of Bedrooms, No. of Bathrooms, and House area</li>
@@ -42,71 +87,177 @@
             </li>
             <center><figure>
                 <img src='images/datasets.png' width="100%" />
-                <figcaption>Fig. 1. Examples from both datasets</figcaption>
+                <figcaption>Fig. 5. Examples from both datasets</figcaption>
             </figure></center>
-            <li>Custom Satellite Image Dataset - A custom dataset that will be compiled by us for testing the effect of using satellite imagery for the task of house price estimation. This will be in concurrence with the New York Houses Dataset, which will be stitched together on the basis of the attributes of longitude and latitude. We will use Google's Static Maps API to extract the images of the houses and their neighborhoods.</li>
+            <li>Custom Satellite Image Dataset - A custom dataset that is compiled by us for testing the effect of using satellite imagery for the task of house price estimation. This will be in concurrence with the New York Houses Dataset, which will be stitched together on the basis of the attributes of longitude and latitude. We use Google's Static Maps API [3] to extract the images of the houses and their neighborhoods, supplying their respective latitude and longitude values to an API call. We also specify the use a zoom factor of 20, and size of the images extracted is 640 x 640 pixels.</li>
             <center><figure>
                 <img src='images/satellite_views.png' width="50%" />
-                <figcaption>Fig. 2. Extracted Satellite Views of examples of New York Houses Dataset shown in Fig. 1</figcaption>
+                <figcaption>Fig. 6. Extracted Satellite Views of examples of New York Houses Dataset shown in Fig. 5</figcaption>
             </figure></center>
         </ol>
         <br><hr>
 
-        <center><h3>Our Approach</h3></center>
+        <center><h3>Experiment and Results</h3></center>
         <p>
-            We shall treat this task as a regression problem, with the target variable as the price of the house and the input features as the various types of images of houses, and their descriptive information.
-        </p>
-        <p>We will follow a three-stage approach, in each of which we will train a model with an increasing amount of information. The three stages are as follows:
-            <ol>
-                <li>Descriptive Features Only</li>
-                <li>Descriptive Features + Frontal Images</li>
-                <li>Descriptive Features + Frontal Images + More Visual Information
-                    <ol style="list-style-type: lower-alpha;">
-                        <li>Satellites Images (for New York Houses Dataset)</li>
-                        <li>Interior Images - bedroom, bathroom, kitchen (for California Houses Dataset)</li>
+            <ol type="I">
+                <li>
+                    <p>Dataset curation and preprocessing</p>
+                    <p>For both datasets, we maintain a train/val/test split of 70:15:15 with random sampling.</p>
+                    <p>The target variable is the price of the house which is normalized by dividing it by the maximum price present in the training set, for all three sets (train/val/test).</p>
+                    <p>The input variables are descriptive features, frontal images, and either satellite images or interior images (depending on the dataset). Preprocessing steps for all these different inputs are listed below -</p>
+                    <ol>
+                        <li><p>Descriptive Features</p>
+                            <p>The descriptive features selected from both the datasets for modeling the house prices are -</p>
+                            <ul>
+                                <li>Number of Bedrooms</li>
+                                <li>Number of Bathrooms</li>
+                                <li>Area of House</li>
+                            </ul>
+                            <p>Since they are all numeric features, they are scaled down by the maximum magnitude of the features present in the training set. The same is done for the test set, using the maximum values of the training set features for fairness.</p>
+                        </li>
+                        <li><p>Frontal Images</p>
+                            <p>These images are scaled down to the size 224 x 224 pixels, to provide as input to the convolutional neural network models using INTER_AREA method of OpenCV.</p>
+                        </li>
+                        <li><p>Satellite Images</p>
+                            <p>These images are used for experiments on the New York Dataset only, since satellite images can be extracted using the information of latitude and longitude of houses. These images after extraction from Google Maps Static API, are rescaled to the size 224 x 224 pixels, to provide as input to the convolutional neural network models using INTER_AREA method of OpenCV.</p>
+                        </li>
+                        <li><p>Interior Images</p>
+                            <p>The three different types of interior images are present in the California Dataset only, including images of bedrooms, bathrooms and kitchens. These are rescaled to the size of 224 x 224 pixels, to provide as input to the convolutional neural network models using INTER_AREA method of OpenCV.</p>
+                        </li>
                     </ol>
+                </li>
+                <li>
+                    <p>Modelling</p>
+                    <p>After the datasets are preprocessed and curated, we begin our modelling phase for all the three proposed stages that utilize incremental amounts of information in the form of descriptive features and visual information.</p>
+                    <p>The metric as well as the loss function used for training all the networks is MAPE (Mean Absolute Percentage Error). The optimizer used for the deep learning networks is ADAM.</p>
+                    <p>The training set is used for training, val set is used for hyperparameter tuning, while the test set is used to evaluate the final model for results.</p>
+                    <p>We have utilized Tensorflow for training all models, which were trained for a total of 100 epochs, with a learning rate of 0.001. We also use Early Stopping for stopping training after 25 epochs of no improvement, and a LR Reducer that reduces LR by a factor of root 10 every 10 epochs without improvement.</p>
+                    <ol start="0">
+                        <li>
+                            <p>Baseline:</p>
+                            <p>Here we just use the average price of the training set as the prediction for all samples in the test set and compute the test metric. This is obviously a naive approach, but a good baseline for datasets that are not very diverse in terms of the range of house prices.</p>
+                        </li>
+                        <li>
+                            <p>Stage 1: Only Using Descriptive Features</p>
+                            <center><figure>
+                                <img src='images/stage1_ma.png' width="50%" />
+                                <figcaption>Fig. 7. Stage 1 Model Architecture</figcaption>
+                            </figure></center>
+                        </li>
+                        <li>
+                            <p>Stage 2: Using Descriptive Features + Frontal Images of Houses</p>
+                            <center><figure>
+                                <img src='images/stage2_ma.png' width="50%" />
+                                <figcaption>Fig. 8. Stage 2 Model Architecture</figcaption>
+                            </figure></center>
+                        </li>
+                        <li>
+                            <p>Stage 3: Using Descriptive Features + Frontal Images of Houses + Additional Visual Information</p>
+                            <center><figure>
+                                <img src='images/stage3_ma.png' width="50%" />
+                                <figcaption>Fig. 9. Stage 3 Model Architecture</figcaption>
+                            </figure></center>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <p>Results</p>
+                     <center><table border="1" width="487">
+                        <tbody>
+                        <tr>
+                        <td align="center" width="161">
+                        <p>Test MAPE (%)</p>
+                        </td>
+                        <td align="center" width="151">
+                        <p>New York Dataset</p>
+                        </td>
+                        <td align="center" width="175">
+                        <p>California Dataset</p>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="center" width="161">
+                        <p>Baseline</p>
+                        </td>
+                        <td align="center" width="151">
+                        <p>28.65</p>
+                        </td>
+                        <td align="center" width="175">
+                        <p>112.66</p>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="center" width="161">
+                        <p>Stage 1</p>
+                        </td>
+                        <td align="center" width="151">
+                        <p>22.78</p>
+                        </td>
+                        <td align="center" width="175">
+                        <p>43.63</p>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="center" width="161">
+                        <p>Stage 2</p>
+                        </td>
+                        <td align="center" width="151">
+                        <p>22.04</p>
+                        </td>
+                        <td align="center" width="175">
+                        <p>39.93</p>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="center" width="161">
+                        <p>Stage 3</p>
+                        </td>
+                        <td align="center" width="151">
+                        <p>21.98</p>
+                        </td>
+                        <td align="center" width="175">
+                        <p>35.62</p>
+                        </td>
+                        </tr>
+                        </tbody>
+                        <caption><p>Table 1: Test performance of all stages on both datasets</p></caption>
+                    </table></center>
                 </li>
             </ol>
         </p>
-
         <br><hr>
 
-        <center><h3>Experiments</h3></center>
-        <p>
-            We will use three different architectures for the various stages of the regression task of house price estimation.
-            <ol>
-                <li>Stage 1: We will use a multilayer perceptron model which will be trained on the descriptive house features only.</li>
+        <center><h3>Qualitative results</h3></center>
+        <p>Below are some of the results for a sample picked from both datasets -</p>
+        <ol>
+            <li>
+                <p>New York Dataset</p>
                 <center><figure>
-                    <img src='images/model_stage1.png' width="50%" />
-                    <figcaption>Fig. 3. Model Pipeline for Stage 1</figcaption>
+                    <img src='images/qual_ny.png' width="80%" />
                 </figure></center>
-                <li>Stage 2: We will use a dual-input neural network, with one input processing the frontal images, and the other input processing the descriptive features. Both inputs will be processed by different branches of the model, and the outputs of those branches will be concatenated together to form an intermediary output. This will then be processed using a final neural network.</li>
+            </li>
+            <li>
+                <p>California Dataset</p>
                 <center><figure>
-                    <img src='images/model_stage2.png' width="50%" />
-                    <figcaption>Fig. 4. Model Pipeline for Stage 2</figcaption>
+                    <img src='images/qual_cali.png' width="80%" />
                 </figure></center>
-                <li>Stage 3: A model similar to Stage 2 will be used, but in this case, we will stitch the frontal image with either the satellite image for the New York Houses Dataset, or the interior images for the California Houses Dataset. We will feed this combined image to one branch and the rest of the process will be the same as Stage 2.</li>
-                <center><figure>
-                    <img src='images/model_stage3.png' width="100%" />
-                    <figcaption>Fig. 5. Model Pipeline for Stage 3</figcaption>
-                </figure></center>
-            </ol>
-
-            For each stage, we will use metrics such as MAPE (Mean Average Percentage Error) and MSE (Mean Squared Error) to represent the performance of the models. We will then compare all these models to get an idea of how visual information is impacting the task.
-        </p>
+            </li>
+        </ol>
         <br><hr>
 
-        <center><h3>Expected Results</h3></center>
-        <p>
-            The expectation is that visual information of all kinds should augment models for the task at hand as compared to just using descriptive features. This is because we are increasing the relevant information for the models to process with each successive stage. The question that would be answered from the experiments would be how each different type of visual input is effective in improving the performance which can be gauged by the difference in the metrics of each stage.
-        </p>
+        <center><h3>Conclusion</h3></center>
+
+        <p>The results of the experiments performed on both datasets show a clear trend of improvement in the performance of the models as they receive more types of visual input information.</p>
+        <p>From the results on the New York dataset, we conclude that deep learning models can benefit from a multimodal distribution of inputs, including descriptive features that capture the spatial information of the houses, frontal images that capture the exterior of the house, along with visual inputs such as satellite images that capture additional information about the house such as the neighborhood and locality in general. This intuitively makes sense because humans also would estimate the price of the house based on the region the house is in, and more finely the colony it is a part of.</p>
+        <p>From the results on the California dataset, we can infer that images of the interior of the house can also be useful for estimating the price of the house in addition to the descriptive features and the frontal images. The intuition behind this can be explained by understanding that these images of house interiors can relay information about the general economic status of the inhabitants, which is generally going to be proportional to the price of the house that they can afford.</p>
+        <p>This work thus promises to bridge the gap of automation for a task such as house price estimation which usually mandates quite specific skillset possessed by people such as property agents, and can be further improved with more visual information along with descriptive features.</p>
         <br><hr>
 
-        <center><h3>Bibliography</h3></center>
+        <center><h3>References</h3></center>
         <ul>
             <li>[1] Eman Ahmed, Mohamed Moustafa: "House price estimation from visual and textual features", 2016; <a href="http://arxiv.org/abs/1609.08399">arXiv:1609.08399</a>.</li>
             <li>[2] Markus Rosenfeld : "Transfer Learning with EfficientNet Image Regression in Keras - Using Custom Data in Keras", 2020; <a href="https://rosenfelder.ai/keras-regression-efficient-net/">https://rosenfelder.ai/keras-regression-efficient-net/</a></li>
-            <li>[3] Adrian Rosebrock : "Keras, Regression and CNNs", 2019; <a href="https://pyimagesearch.com/2019/01/28/keras-regression-and-cnns/">https://pyimagesearch.com/2019/01/28/keras-regression-and-cnns/</a></li>
+            <li>[3] Google Maps Static API : <a href="https://developers.google.com/maps/documentation/maps-static/overview/">https://developers.google.com/maps/documentation/maps-static/overview/</a></li>
         </ul>
 
         <br><br><br>
